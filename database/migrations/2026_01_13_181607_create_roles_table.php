@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tenants', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('roleable_id'); // Owner of the role
+            $table->string('roleable_type'); // Owner type (e.g., User, Tenant)
             $table->string('name');
-            $table->string('logo')->nullable();
-            $table->boolean('default')->default(false);
             $table->timestamps();
 
-            $table->index('name', 'tenant_name_index');
+            $table->index(['roleable_id', 'roleable_type']);
+            $table->index('name');
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tenants');
+        Schema::dropIfExists('roles');
     }
 };

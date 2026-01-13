@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\UserRole;
+use App\Models\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,6 +18,8 @@ class User extends Authenticatable
     use HasApiTokens,
         HasFactory,
         Notifiable;
+
+    use HasRoles;
 
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -52,5 +55,15 @@ class User extends Authenticatable
             'name' => "Default",
             'default' => true,
         ]);
+    }
+
+    public function isOwner(): bool
+    {
+        return $this->role === UserRole::Owner;
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->role === UserRole::Staff;
     }
 }

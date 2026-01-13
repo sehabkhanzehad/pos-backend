@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tenants', function (Blueprint $table) {
+        Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('name');
-            $table->string('logo')->nullable();
-            $table->boolean('default')->default(false);
+            $table->string('name')->unique();
             $table->timestamps();
 
-            $table->index('name', 'tenant_name_index');
+            $table->index('name', 'permission_name_index');
         });
     }
 
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tenants');
+        Schema::dropIfExists('permissions');
     }
 };
