@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->boolean('default')->default(false);
             $table->timestamps();
+
+            $table->index('name');
         });
     }
 

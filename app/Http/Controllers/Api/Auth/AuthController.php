@@ -19,7 +19,9 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        User::create($validated);
+        $user = User::create($validated);
+
+        $user->createDefaultTenant();
 
         return response()->json(['message' => 'Sign up successful.'], 201);
     }
