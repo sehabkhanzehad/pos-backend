@@ -4,30 +4,24 @@ namespace App\Http\Controllers\Api\Tenant;
 
 use App\Enums\Permission;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RoleCreateRequest;
-use App\Http\Requests\RoleUpdateRequest;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
-use App\Http\Resources\RoleResource;
+use App\Http\Requests\Api\Tenant\Role\StoreRoleRequest;
+use App\Http\Requests\Api\Tenant\Role\UpdateRoleRequest;
+use App\Http\Resources\Api\Tenant\RoleResource;
 use App\Models\Role;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RolePermissionController extends Controller
 {
-    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function index(): AnonymousResourceCollection
     {
-        $roles = currentWorkspace()->ownedRoles()
-            ->with(includes())
+        $roles = currentTenant()
+            ->ownedRoles()
+            // ->with(includes())
             ->latest()
             ->paginate(perPage());
 
-        $perPageOptions = [10, 25, 50, 100];
-
-        return RoleResource::collection($roles)->additional([
-            'meta' => [
-                'per_page_options' => $perPageOptions,
-            ],
-        ]);
+        return RoleResource::collection($roles);
     }
 
     public function store(StoreRoleRequest $request): JsonResponse
@@ -57,5 +51,16 @@ class RolePermissionController extends Controller
         $role->delete();
 
         return $this->success('Role deleted successfully.');
+    }
+
+    public function permissions(): JsonResponse
+    {
+        $permissions = array_map(function ($permission) {
+            return (object)['name' => $permission];
+        }, Permission::values());
+
+        return response()->json([
+            "permissions" => $permissions,
+        ]);
     }
 }

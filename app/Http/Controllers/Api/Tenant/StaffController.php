@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\Tenant;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Teanant\StoreStaffRequest;
-use App\Http\Requests\Api\Teanant\UpdateStaffRequest;
+use App\Http\Requests\Api\Tenant\Staff\StoreStaffRequest;
+use App\Http\Requests\Api\Tenant\Staff\UpdateStaffRequest;
 use App\Http\Resources\Api\Tenant\StaffResource;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;

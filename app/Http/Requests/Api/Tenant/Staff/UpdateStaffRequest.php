@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\Teanant;
+namespace App\Http\Requests\Api\Tenant\Staff;
 
 use App\Enums\Permission;
 use Illuminate\Foundation\Http\FormRequest;
@@ -29,7 +29,7 @@ class UpdateStaffRequest extends FormRequest
             'roles' => ['required', 'array'],
             'roles.*' => [
                 'required',
-                function ($value, $fail) {
+                function ($attributes, $value, $fail) {
                     if (!currentTenant()->ownedRoles()->where('id', $value)->exists()) {
                         $fail('The selected role is invalid.');
                     }

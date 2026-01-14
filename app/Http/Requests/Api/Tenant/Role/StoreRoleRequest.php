@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api\Tenant\Role;
 
 use App\Enums\Permission;
 use Illuminate\Foundation\Http\FormRequest;
