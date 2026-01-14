@@ -2,11 +2,14 @@
 
 namespace App\Http\Resources\Api\Tenant;
 
+use App\Http\Resources\Tratis\HasRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class StaffResource extends JsonResource
 {
+    use HasRelationship;
+
     /**
      * Transform the resource into an array.
      *
@@ -24,60 +27,42 @@ class StaffResource extends JsonResource
                 'updatedAt' => $this->updated_at,
             ],
             'relationships' => [
-                'permissions' => [
-                    'data' => $this->whenLoaded('permissions', function () {
-                        return $this->permissions->map(function ($permission) {
-                            return [
-                                'type' => 'permission',
-                                'id' => $permission->id,
-                            ];
-                        });
-                    }),
-                ],
-                'roles' => [
-                    'data' => $this->whenLoaded('roles', function () {
-                        return $this->roles->map(function ($role) {
-                            return [
-                                'type' => 'role',
-                                'id' => $role->id,
-                            ];
-                        });
-                    }),
-                ],
+                'roles' => $this->relationship('roles', 'role'),
+                'permissions' => $this->relationship('permissions', 'permission')
             ],
-            'included' =>
-            $this->when(
+            'included' => $this->when(
                 $this->relationLoaded('permissions') || $this->relationLoaded('roles'),
-                function () {
-                    $included = [];
-
-                    if ($this->relationLoaded('permissions')) {
-                        foreach ($this->permissions as $permission) {
-                            $included[] = [
-                                'type' => 'permission',
-                                'id' => $permission->id,
-                                'attributes' => [
-                                    'name' => $permission->name,
-                                ],
-                            ];
-                        }
-                    }
-
-                    if ($this->relationLoaded('roles')) {
-                        foreach ($this->roles as $role) {
-                            $included[] = [
-                                'type' => 'role',
-                                'id' => $role->id,
-                                'attributes' => [
-                                    'name' => $role->name,
-                                    'permissionsCount' => $role->permissions()->count(),
-                                ],
-                            ];
-                        }
-                    }
-                    return $included;
-                }
+                $this->buildIncluded(...)
             ),
         ];
+    }
+
+    private function buildIncluded(): void
+    {
+        $included = [];
+
+        if ($this->relationLoaded('permissions')) {
+            $included = array_merge($included, $this->permissions->map(function ($permission) {
+                return [
+                    'type' => 'permission',
+                    'id' => $permission->id,
+                    'attributes' => [
+                        'name' => $permission->name,
+                    ],
+                ];
+            })->toArray());
+        }
+
+        if ($this->relationLoaded('roles')) {
+            $included = array_merge($included, $this->roles->map(function ($role) {
+                return [
+                    'type' => 'role',
+                    'id' => $role->id,
+                    'attributes' => [
+                        'name' => $role->name,
+                    ],
+                ];
+            })->toArray());
+        }
     }
 }
