@@ -2,8 +2,12 @@
 
 namespace App\Enums;
 
+use App\Enums\Traits\EnumHelper;
+
 enum Permission: string
 {
+    use EnumHelper;
+
     case StaffView = 'staff.view';
     case StaffCreate = 'staff.create';
     case StaffUpdate = 'staff.update';
