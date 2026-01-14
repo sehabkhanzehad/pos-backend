@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait HasPermissions
 {
+    // Relations
     /**
      * Permissions assigned to the model.
      *
@@ -22,31 +23,25 @@ trait HasPermissions
         return $this->morphToMany(Permission::class, 'assignable', 'model_permissions')->withTimestamps();
     }
 
-    /* Helpers */
-    // public function givePermissions(array $permissions): void
-    // {
-    //     $permissionIds = Permission::whereIn('name', $permissions)->pluck('id');
-    //     $this->permissions()->sync($permissionIds);
-    // }
+    // Helpers 
+    public function givePermissions(array $permissions): void
+    {
+        $permissionIds = Permission::whereIn('name', $permissions)->pluck('id');
+        $this->permissions()->sync($permissionIds);
+    }
 
-    // public function revokePermission(array $permissions): void
-    // {
-    //     $permissionIds = Permission::whereIn('name', $permissions)->pluck('id');
-    //     $this->permissions()->detach($permissionIds);
-    // }
+    public function hasPermission(EnumPermission $permission): bool
+    {
+        $permissionName = $permission->value;
 
-    // public function hasPermission(EnumPermission $permission): bool
-    // {
-    //     $permissionName = $permission->value;
+        // Direct permissions
+        $direct = $this->permissions->contains('name', $permissionName);
 
-    //     // Direct permissions
-    //     $direct = $this->permissions->contains('name', $permissionName);
+        // Permissions via roles (requires model to use HasRoles trait)
+        $viaRoles = method_exists($this, 'roles')
+            ? $this->roles->flatMap->permissions->contains('name', $permissionName)
+            : false;
 
-    //     // Permissions via roles (requires model to use HasRoles trait)
-    //     $viaRoles = method_exists($this, 'roles')
-    //         ? $this->roles->flatMap->permissions->contains('name', $permissionName)
-    //         : false;
-
-    //     return $direct || $viaRoles;
-    // }
+        return $direct || $viaRoles;
+    }
 }

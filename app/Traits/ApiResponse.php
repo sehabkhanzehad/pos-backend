@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Http\JsonResponse;
+
 trait ApiResponse
 {
     /**
@@ -13,7 +15,7 @@ trait ApiResponse
      * @param array  $meta       Additional metadata for the response.
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function success(string $message = 'Success.', int $statusCode = 200, array $data = [],  array $meta = [])
+    protected function success(string $message = 'Success.', int $statusCode = 200, array $data = [],  array $meta = []): JsonResponse
     {
         $response = [
             'success' => true,
@@ -35,7 +37,7 @@ trait ApiResponse
      * @param array  $errors     Additional error details.
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function error(string $message = 'Error.', int $statusCode = 400, array $errors = [])
+    public static function error(string $message = 'Error.', int $statusCode = 400, array $errors = []): JsonResponse
     {
         $response = [
             'success' => false,

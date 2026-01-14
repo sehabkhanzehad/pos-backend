@@ -4,8 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\Permission as EnumPermission;
 use App\Enums\UserRole;
+use App\Models\Traits\HasPermissions;
 use App\Models\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,6 +23,7 @@ class User extends Authenticatable
         Notifiable;
 
     use HasRoles;
+    use HasPermissions;
 
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -66,4 +70,11 @@ class User extends Authenticatable
     {
         return $this->role === UserRole::Staff;
     }
+
+    public function hasAccessTo(EnumPermission $permission): bool
+    {
+        return $this->isOwner() || $this->hasPermission($permission);
+    }
+
+    // Scopes
 }

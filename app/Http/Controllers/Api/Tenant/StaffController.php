@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Tenant;
 
 use App\Enums\UserRole;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Teanant\StoreStaffRequest;
 use App\Http\Requests\Api\Teanant\UpdateStaffRequest;
 use App\Http\Resources\Api\Tenant\StaffResource;

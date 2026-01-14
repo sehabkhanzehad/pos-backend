@@ -3,60 +3,46 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Auth\SignInRequest;
+use App\Http\Requests\Api\Auth\SignUpRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function signUp(Request $request): JsonResponse
+    public function signUp(SignUpRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::create($validated);
+        $user = User::create($request->validated());
 
         $user->createDefaultTenant();
 
-        return response()->json(['message' => 'Sign up successful.'], 201);
+        return $this->success('Sign up successful.', 201);
     }
 
-    public function signIn(Request $request): JsonResponse
+    public function signIn(SignInRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-        ]);
+        $request->authenticate();
 
-        $user = User::where('email', $request->email)->first();
+        $token = $request->authenticatedUser()
+            ->createToken(name: 'auth_token', expiresAt: $request->getTokenExpiration())
+            ->plainTextToken;
 
-        $credentials = $request->only('email', 'password');
-
-        if (!Auth::attempt($credentials)) return response()->json(['message' => 'The provided credentials are incorrect.'], 401);
-
-        /** @var User $user */
-        $user = Auth::user();
-
-        $tokenExpiration = $validated['remember'] ? now()->addMonths(6) : now()->addHours(12);
-
-        $token = $user->createToken('Mobile Token', ['*'], $tokenExpiration);
-
-        return response()->json([
-            'accessToken' => $token->plainTextToken,
+        return $this->success('Sign in successful.', 200, [
+            'accessToken' => $token,
             'tokenType' => 'Bearer',
-            'expiresAt' => $tokenExpiration->toDateTimeString(),
         ]);
+    }
+
+    public function user(Request $request)
+    {
+        return $request->user();
     }
 
     public function signOut(Request $request): JsonResponse
     {
         $request->user()->tokens()->delete();
 
-        return response()->json(['message' => 'Sign out successful.']);
+        return $this->success('Sign out successful.');
     }
 }
