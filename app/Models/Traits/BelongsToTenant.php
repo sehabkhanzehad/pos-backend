@@ -20,8 +20,6 @@ trait BelongsToTenant
 
         static::addGlobalScope(new TenantScope());
 
-        static::creating(function (Model $model) {
-            $model->tenant_id = currentTenant()->id;
-        });
+        static::creating(fn(Model $model) => $model->tenant_id = currentTenant()->id);
     }
 }
