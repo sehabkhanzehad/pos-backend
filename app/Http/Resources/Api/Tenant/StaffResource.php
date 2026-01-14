@@ -2,13 +2,13 @@
 
 namespace App\Http\Resources\Api\Tenant;
 
-use App\Http\Resources\Tratis\HasRelationship;
+use App\Http\Resources\Traits\JsonApiRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class StaffResource extends JsonResource
 {
-    use HasRelationship;
+    use JsonApiRelationship;
 
     /**
      * Transform the resource into an array.
@@ -32,37 +32,23 @@ class StaffResource extends JsonResource
             ],
             'included' => $this->when(
                 $this->relationLoaded('permissions') || $this->relationLoaded('roles'),
-                $this->buildIncluded(...)
+                $this->buildIncluded()
             ),
         ];
     }
 
-    private function buildIncluded(): void
+    private function buildIncluded(): array
     {
-        $included = [];
+        $included = collect();
 
         if ($this->relationLoaded('permissions')) {
-            $included = array_merge($included, $this->permissions->map(function ($permission) {
-                return [
-                    'type' => 'permission',
-                    'id' => $permission->id,
-                    'attributes' => [
-                        'name' => $permission->name,
-                    ],
-                ];
-            })->toArray());
+            $included = $included->merge($this->permissions->map(PermissionResource::make(...)));
         }
 
         if ($this->relationLoaded('roles')) {
-            $included = array_merge($included, $this->roles->map(function ($role) {
-                return [
-                    'type' => 'role',
-                    'id' => $role->id,
-                    'attributes' => [
-                        'name' => $role->name,
-                    ],
-                ];
-            })->toArray());
+            $included = $included->merge($this->roles->map(RoleResource::make(...)));
         }
+
+        return $included->toArray();
     }
 }

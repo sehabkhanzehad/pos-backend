@@ -12,4 +12,5 @@ Route::prefix('roles')->group(function () {
     Route::delete('/{role}', [RolePermissionController::class, 'destroy'])->can('delete', 'role');
 });
 
-Route::get('/permissions', [RolePermissionController::class, 'permissions'])->can('viewAny', Role::class);
+Route::get('/roles-for-attach', [RolePermissionController::class, 'roles'])->can('viewAny', Role::class);
+Route::get('/permissions-for-attach', [RolePermissionController::class, 'permissions'])->can('viewAny', Role::class);

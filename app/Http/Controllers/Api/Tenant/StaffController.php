@@ -14,30 +14,11 @@ use Illuminate\Support\Str;
 
 class StaffController extends Controller
 {
-    // public function view(): Response
-    // {
-    //     $user = currentUser();
-
-    //     $permissions = array_map(function ($permission) {
-    //         return (object)['name' => $permission];
-    //     }, Permission::values());
-
-    //     return Inertia::render('MainDashboard/Spaces/TeamMembers/AllMembers/AllMembers', [
-    //         'permissions' => $permissions,
-    //         'roles' => currentSpace()->ownedRoles()->get(['id', 'name']),
-    //         'can' => [
-    //             'create' => $user->hasAccessTo(Permission::TeamMemberCreate),
-    //             'update' => $user->hasAccessTo(Permission::TeamMemberUpdate),
-    //             'delete' => $user->hasAccessTo(Permission::TeamMemberDelete),
-    //         ],
-    //     ]);
-    // }
-
     public function index(): AnonymousResourceCollection
     {
         $staffs = currentTenant()->staffs()
             ->where('id', '!=', currentUser()->id)
-            // ->with(includes())
+            ->with(includes())
             ->latest()
             ->paginate(perPage());
 

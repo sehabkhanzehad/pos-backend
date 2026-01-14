@@ -18,6 +18,19 @@ if (!function_exists('currentUser')) {
     }
 }
 
+if (!function_exists('includes')) {
+    function includes(array $relations = []): array
+    {
+        $include = request('include');
+
+        if (empty($include)) return $relations;
+
+        $requestedRelations = explode(',', $include);
+
+        return array_values(array_unique([...$relations, ...$requestedRelations]));
+    }
+}
+
 if (!function_exists('perPage')) {
     function perPage()
     {

@@ -17,7 +17,8 @@ class RolePermissionController extends Controller
     {
         $roles = currentTenant()
             ->ownedRoles()
-            // ->with(includes())
+            ->select('id', 'name', 'created_at', 'updated_at')
+            ->with(includes())
             ->latest()
             ->paginate(perPage());
 
@@ -51,6 +52,17 @@ class RolePermissionController extends Controller
         $role->delete();
 
         return $this->success('Role deleted successfully.');
+    }
+
+    public function roles(): AnonymousResourceCollection
+    {
+        $roles = currentTenant()
+            ->ownedRoles()
+            ->select('id', 'name', 'created_at', 'updated_at')
+            ->orderBy('name')
+            ->get();
+
+        return RoleResource::collection($roles);
     }
 
     public function permissions(): JsonResponse

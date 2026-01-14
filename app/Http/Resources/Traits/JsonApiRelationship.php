@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Tratis;
+namespace App\Http\Resources\Traits;
 
 use Illuminate\Support\Collection;
 
-trait HasRelationship
+trait JsonApiRelationship
 {
     protected function relationship(string $relation, string $type): array
     {

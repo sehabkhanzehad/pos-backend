@@ -2,11 +2,14 @@
 
 namespace App\Http\Resources\Api\Tenant;
 
+use App\Http\Resources\Traits\JsonApiRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RoleResource extends JsonResource
 {
+    use JsonApiRelationship;
+
     /**
      * Transform the resource into an array.
      *
@@ -23,59 +26,28 @@ class RoleResource extends JsonResource
                 'updatedAt' => $this->updated_at,
             ],
             'relationships' => [
-                'permissions' => [
-                    'data' => $this->whenLoaded('permissions', function () {
-                        return $this->permissions->map(function ($permission) {
-                            return [
-                                'type' => 'permission',
-                                'id' => $permission->id,
-                            ];
-                        });
-                    }),
-                ],
-                'users' => [
-                    'data' => $this->whenLoaded('models', function () {
-                        return $this->models->map(function ($model) {
-                            return [
-                                'type' => 'model',
-                                'id' => $model->id,
-                            ];
-                        });
-                    }),
-                ],
+                'permissions' => $this->relationship('permissions', 'permission'),
+                'users' => $this->relationship('users', 'user'),
             ],
             'included' => $this->when(
-                $this->relationLoaded('permissions') || $this->relationLoaded('models'),
-                function () {
-                    $included = [];
-
-                    if ($this->relationLoaded('permissions')) {
-                        foreach ($this->permissions as $permission) {
-                            $included[] = [
-                                'type' => 'permission',
-                                'id' => $permission->id,
-                                'attributes' => [
-                                    'name' => $permission->name,
-                                ],
-                            ];
-                        }
-                    }
-
-                    if ($this->relationLoaded('users')) {
-                        foreach ($this->users as $user) {
-                            $included[] = [
-                                'type' => 'user',
-                                'id' => $user->id,
-                                'attributes' => [
-                                    'name' => $user->name,
-                                ],
-                            ];
-                        }
-                    }
-
-                    return $included;
-                }
+                $this->relationLoaded('permissions') || $this->relationLoaded('users'),
+                $this->buildIncluded()
             ),
         ];
+    }
+
+    private function buildIncluded(): array
+    {
+        $included = collect();
+
+        if ($this->relationLoaded('permissions')) {
+            $included = $included->merge($this->permissions->map(PermissionResource::make(...)));
+        }
+
+        if ($this->relationLoaded('users')) {
+            $included = $included->merge($this->users->map(StaffResource::make(...)));
+        }
+
+        return $included->toArray();
     }
 }
