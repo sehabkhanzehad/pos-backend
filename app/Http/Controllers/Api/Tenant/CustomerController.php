@@ -33,6 +33,11 @@ class CustomerController extends Controller
         }
     }
 
+    public function show(Customer $customer): CustomerResource
+    {
+        return new CustomerResource($customer);
+    }
+
     public function update(UpdateCustomerRequest $request, Customer $customer): JsonResponse
     {
         try {

@@ -21,7 +21,8 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return false;
+        return $user->hasAccessTo(Permission::StaffView)
+            && $model->tenant_id === currentTenant()->id;
     }
 
     /**

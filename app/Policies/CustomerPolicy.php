@@ -22,7 +22,7 @@ class CustomerPolicy
      */
     public function view(User $user, Customer $customer): bool
     {
-        return false;
+        return $user->hasAccessTo(Permission::CustomerView) && $customer->belongsToCurrentTenant();
     }
 
     /**

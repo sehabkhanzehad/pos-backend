@@ -8,6 +8,7 @@ Route::prefix('roles')->group(function () {
     Route::get('/', [RolePermissionController::class, 'index'])->can("viewAny", Role::class);
     Route::post('/', [RolePermissionController::class, 'store'])->can('create', Role::class);
 
+    Route::get('/{role}', [RolePermissionController::class, 'show'])->can('view', 'role');
     Route::put('/{role}', [RolePermissionController::class, 'update'])->can('update', 'role');
     Route::delete('/{role}', [RolePermissionController::class, 'destroy'])->can('delete', 'role');
 });

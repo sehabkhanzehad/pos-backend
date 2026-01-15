@@ -22,7 +22,7 @@ class RolePolicy
      */
     public function view(User $user, Role $role): bool
     {
-        return false;
+        return $user->hasAccessTo(Permission::RoleView) && $role->roleable_id === currentTenant()->id;
     }
 
     /**

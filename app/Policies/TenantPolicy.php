@@ -21,7 +21,7 @@ class TenantPolicy
      */
     public function view(User $user, Tenant $tenant): bool
     {
-        return false;
+        return $user->isOwner() && $tenant->owner()->is($user);
     }
 
     /**

@@ -32,6 +32,11 @@ class TenantController extends Controller
         return $this->success('Tenant created successfully.', 201);
     }
 
+    public function show(Tenant $tenant): TenantResource
+    {
+        return new TenantResource($tenant);
+    }
+
     public function update(Request $request, Tenant $tenant): JsonResponse
     {
         $request->validate([

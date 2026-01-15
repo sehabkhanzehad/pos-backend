@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('customers')->group(function () {
     Route::get('/', [CustomerController::class, 'index'])->can('viewAny', Customer::class);
     Route::post('/', [CustomerController::class, 'store'])->can('create', Customer::class);
+
+    Route::get('/{customer}', [CustomerController::class, 'show'])->can('view', "customer");
     Route::put('/{customer}', [CustomerController::class, 'update'])->can('update', "customer");
     Route::delete('/{customer}', [CustomerController::class, 'destroy'])->can('delete', 'customer');
 });

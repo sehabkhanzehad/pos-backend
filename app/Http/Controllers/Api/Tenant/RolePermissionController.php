@@ -34,6 +34,11 @@ class RolePermissionController extends Controller
         return $this->success('Role created successfully', 201);
     }
 
+    public function show(Role $role): RoleResource
+    {
+        return new RoleResource($role);
+    }
+
     public function update(UpdateRoleRequest $request, Role $role): JsonResponse
     {
         $role->update([

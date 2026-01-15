@@ -44,6 +44,11 @@ class StaffController extends Controller
         ]);
     }
 
+    public function show(User $user): StaffResource
+    {
+        return new StaffResource($user);
+    }
+
     public function update(UpdateStaffRequest $request, User $user): JsonResponse
     {
         $user->update([
