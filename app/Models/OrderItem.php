@@ -8,24 +8,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderItem extends Model
 {
-    use BelongsToTenant;
-
     protected $fillable = [
-        'tenant_id',
         'order_id',
         'product_id',
-        'sku',
-        'name',
-        'unit_price',
         'qty',
-        'line_total',
+        'unit_price',
+        'sub_total',
     ];
 
     protected $casts = [
+        'qty' => 'integer',
         'unit_price' => 'decimal:2',
-        'line_total' => 'decimal:2',
+        'sub_total' => 'decimal:2',
     ];
 
+    // Relations
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);

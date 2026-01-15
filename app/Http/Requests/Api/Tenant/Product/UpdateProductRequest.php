@@ -22,7 +22,17 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['sometimes', 'string', 'max:255'],
+            'sku' => [
+                'sometimes',
+                'string',
+                'max:255',
+                uniqueInTenant('products', 'sku', $this->route('product')->id)
+            ],
+            'price' => ['sometimes', 'numeric', 'min:0'],
+            'stock_quantity' => ['sometimes', 'integer', 'min:0'],
+            'low_stock_threshold' => ['nullable', 'integer', 'min:0'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

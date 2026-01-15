@@ -15,11 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('name');
-            $table->string('logo')->nullable();
             $table->boolean('default')->default(false);
             $table->timestamps();
 
-            $table->index('name', 'tenant_name_index');
+            $table->index('name');
         });
     }
 

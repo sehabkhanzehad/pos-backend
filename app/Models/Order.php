@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OruderStatus;
 use App\Models\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,24 +17,18 @@ class Order extends Model
         'customer_id',
         'order_no',
         'status',
-        'sub_total',
-        'discount_total',
-        'tax_total',
-        'grand_total',
+        'total_amount',
         'created_by',
-        'paid_at',
-        'cancelled_at',
     ];
 
     protected $casts = [
-        'sub_total' => 'decimal:2',
-        'discount_total' => 'decimal:2',
-        'tax_total' => 'decimal:2',
-        'grand_total' => 'decimal:2',
+        'status' => OruderStatus::class,
+        'total_amount' => 'decimal:2',
         'paid_at' => 'datetime',
         'cancelled_at' => 'datetime',
     ];
 
+    // Relations
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
@@ -49,8 +44,42 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    // public function movements(): HasMany
-    // {
-    //     return $this->hasMany(InventoryMovement::class);
-    // }
+    // Helpers
+    public function isPending(): bool
+    {
+        return $this->status === OruderStatus::Pending;
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->status === OruderStatus::Paid;
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === OruderStatus::Cancelled;
+    }
+
+    public function markAsCancelled(): void
+    {
+        $this->status = OruderStatus::Cancelled;
+        $this->cancelled_at = now();
+        $this->save();
+    }
+
+    public function markAsPaid(): void
+    {
+        $this->status = OruderStatus::Paid;
+        $this->paid_at = now();
+        $this->save();
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($order) {
+            $order->order_number = 'ORD-' . strtoupper(uniqid());
+        });
+    }
 }

@@ -17,13 +17,12 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('sku');
-            $table->decimal('price', 12, 2);
+            $table->decimal('price', 10, 2);
 
             $table->text('description')->nullable();
-            $table->string('image')->nullable();
 
             $table->unsignedInteger('stock_qty')->default(0);
-            $table->unsignedInteger('low_stock_threshold')->default(0);
+            $table->unsignedInteger('low_stock_threshold')->default(10);
 
             $table->timestamps();
 
@@ -34,7 +33,6 @@ return new class extends Migration
             $table->index(['tenant_id', 'stock_qty']);
         });
     }
-
     /**
      * Reverse the migrations.
      */

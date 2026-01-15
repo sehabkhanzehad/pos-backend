@@ -13,11 +13,15 @@ class Tenant extends Model
     use HasOwnedRoles;
     use HasUuids;
 
-    protected $cast = [
+    protected $casts = [
         'default' => 'boolean',
     ];
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'user_id',
+        'name',
+        'default',
+    ];
 
     public function owner(): BelongsTo
     {

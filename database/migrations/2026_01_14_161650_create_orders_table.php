@@ -16,13 +16,10 @@ return new class extends Migration
             $table->foreignUuid('tenant_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('customer_id')->nullable()->constrained()->nullOnDelete();
 
-            $table->string('order_no')->nullable();
+            $table->string('order_no')->unique();
             $table->string('status')->default('pending');
 
-            $table->decimal('sub_total', 12, 2)->default(0);
-            $table->decimal('discount_total', 12, 2)->default(0);
-            $table->decimal('tax_total', 12, 2)->default(0);
-            $table->decimal('grand_total', 12, 2)->default(0);
+            $table->decimal('total_amount', 10, 2);
 
             $table->foreignId('created_by')->constrained()->restrictOnDelete()->cascadeOnUpdate();
 
