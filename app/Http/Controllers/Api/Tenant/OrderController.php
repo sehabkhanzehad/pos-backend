@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Tenant;
 
 use App\Enums\OrderStatus;
+use App\Exceptions\InsufficientStockException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Tenant\Order\StoreOrderRequest;
 use App\Http\Resources\Api\Tenant\OrderResource;
@@ -34,7 +35,10 @@ class OrderController extends Controller
             foreach ($request->items as $item) {
                 $product = $products[$item['product_id']];
 
-                if ($product->stock_qty < $item['qty']) throw new \Exception("Insufficient stock for product {$product->name}.");
+                if ($product->stock_qty < $item['qty']) {
+                    // Note: Made ths custom exception for demo
+                    throw new InsufficientStockException("Insufficient stock for product {$product->name}.");
+                }
 
                 $subtotal = $product->price * $item['qty'];
                 $totalAmount += $subtotal;
@@ -66,20 +70,30 @@ class OrderController extends Controller
             return $this->success("Order created successfully.", 201);
         } catch (\Exception $e) {
             DB::rollBack();
+            logger()->error("Order creation failed: {$e->getMessage()}");
             return $this->error("Failed to create order.", 500);
         }
     }
 
-    public function show(Order $order): OrderResource
+    public function show(Order $order): JsonResponse|OrderResource
     {
-        return new OrderResource($order->load(includes()));
+        try {
+            return new OrderResource($order->load(includes()));
+        } catch (\Exception $e) {
+            return $this->error("Failed to retrieve order details.", 500);
+        }
     }
 
     public function paid(Order $order): JsonResponse
     {
-        $order->markAsPaid();
+        try {
+            $order->markAsPaid();
 
-        return $this->success("Order marked as paid successfully.");
+            return $this->success("Order marked as paid successfully.");
+        } catch (\Exception $e) {
+            logger()->error("Order payment failed: {$e->getMessage()}");
+            return $this->error('Failed to mark order as paid.', 500);
+        }
     }
 
     public function cancel(Order $order): JsonResponse
@@ -99,7 +113,7 @@ class OrderController extends Controller
             return $this->success("Order cancelled successfully.");
         } catch (\Exception $e) {
             DB::rollBack();
-
+            logger()->error("Order cancellation failed: {$e->getMessage()}");
             return $this->error("Failed to cancel order.", 500);
         }
     }

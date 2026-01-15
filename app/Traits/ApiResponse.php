@@ -37,7 +37,7 @@ trait ApiResponse
      * @param array  $errors     Additional error details.
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function error(string $message = 'Error.', int $statusCode = 400, array $errors = []): JsonResponse
+    public static function error(string $message = 'Error.', int $statusCode = 500, array $errors = [], ?\Exception $e = null): JsonResponse
     {
         $response = [
             'success' => false,
@@ -46,6 +46,11 @@ trait ApiResponse
         ];
 
         if (!empty($errors)) $response['errors'] = $errors;
+
+        if ($e) logger()->error($message, [
+            'exception' => $e,
+            'trace' => $e->getTraceAsString(),
+        ]);
 
         return response()->json($response, $statusCode);
     }
