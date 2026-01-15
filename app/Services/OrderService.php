@@ -4,26 +4,25 @@ namespace App\Services;
 
 use App\Enums\OrderStatus;
 use App\Exceptions\InsufficientStockException;
-use App\Http\Requests\Api\Tenant\Order\StoreOrderRequest;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    public function createOrder(StoreOrderRequest $request): Order
+    public function createOrder(array $data): Order
     {
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($data) {
             $totalAmount = 0;
             $orderItems = [];
 
-            $products = Product::whereIn('id', $request->getProductIds())
+            $products = Product::whereIn('id', collect($data['items'])->pluck('product_id'))
                 ->orderBy('id')
                 ->lockForUpdate()
                 ->get()
                 ->keyBy('id');
 
-            foreach ($request->items as $item) {
+            foreach ($data['items'] as $item) {
                 $product = $products[$item['product_id']];
 
                 if ($product->stock_qty < $item['qty']) {
@@ -51,7 +50,7 @@ class OrderService
             $order->items()->createMany($orderItems);
 
             // Decrement stock
-            foreach ($request->items as $item) {
+            foreach ($data['items'] as $item) {
                 $products[$item['product_id']]->decrement('stock_qty', $item['qty']);
             }
 
@@ -61,13 +60,11 @@ class OrderService
 
     public function cancelOrder(Order $order): void
     {
-        DB::transaction(function () use ($order) {
-            foreach ($order->items as $item) {
-                $product = Product::lockForUpdate()->findOrFail($item->product_id);
-                $product->increment('stock_qty', $item->qty);
-            }
-
-            $order->markAsCancelled();
-        });
+        $productIds = $order->items->pluck('product_id');
+        $products = Product::whereIn('id', $productIds)->lockForUpdate()->get()->keyBy('id');
+        foreach ($order->items as $item) {
+            $products[$item->product_id]->increment('stock_qty', $item->qty);
+        }
+        $order->markAsCancelled();
     }
 }

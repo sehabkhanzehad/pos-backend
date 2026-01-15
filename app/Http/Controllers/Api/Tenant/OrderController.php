@@ -22,7 +22,7 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request, OrderService $orderService): JsonResponse
     {
         try {
-            $orderService->createOrder($request);
+            $orderService->createOrder($request->validated());
 
             return $this->success('Order created successfully.', 201);
         } catch (\Exception $e) {
