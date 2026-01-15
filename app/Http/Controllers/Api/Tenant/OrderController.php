@@ -29,10 +29,12 @@ class OrderController extends Controller
             $totalAmount = 0;
             $orderItems = [];
 
-            foreach ($request->items as $item) {
-                $product = Product::lockForUpdate()->findOrFail($item['product_id']);
+            $products = Product::whereIn('id', $request->getProductIds())->orderBy('id')->lockForUpdate()->get()->keyBy('id');
 
-                if ($product->stock_qty < $item['qty']) throw new \Exception("Insufficient stock for product ID: {$product->id}");
+            foreach ($request->items as $item) {
+                $product = $products[$item['product_id']];
+
+                if ($product->stock_qty < $item['qty']) throw new \Exception("Insufficient stock for product {$product->name}.");
 
                 $subtotal = $product->price * $item['qty'];
                 $totalAmount += $subtotal;
@@ -43,25 +45,27 @@ class OrderController extends Controller
                     'unit_price' => $product->price,
                     'subtotal' => $subtotal,
                 ];
-
-                $product->decrement('stock_qty', $item['qty']);
             }
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
                 'total_amount' => $totalAmount,
                 'status' => OrderStatus::Pending,
-                'created_by' => $request->user()->id,
+                'created_by' => currentUser()->id,
             ]);
 
             $order->items()->createMany($orderItems);
+
+            // Decrement after order creation
+            foreach ($request->items as $item) {
+                $products[$item['product_id']]->decrement('stock_qty', $item['qty']);
+            }
 
             DB::commit();
 
             return $this->success("Order created successfully.", 201);
         } catch (\Exception $e) {
             DB::rollBack();
-
             return $this->error("Failed to create order.", 500);
         }
     }
@@ -71,7 +75,7 @@ class OrderController extends Controller
         return OrderResource::make($order->load(['customer', 'creator', 'items.product']));
     }
 
-    public function paid(Order $order): JsonResponse 
+    public function paid(Order $order): JsonResponse
     {
         $order->markAsPaid();
 

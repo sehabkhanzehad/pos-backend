@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\Tenant\Order;
 
+use Illuminate\Support\Collection;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOrderRequest extends FormRequest
@@ -27,5 +28,10 @@ class StoreOrderRequest extends FormRequest
             'items.*.product_id' => ['required', existsInTenant('products', 'id')],
             'items.*.qty' => ['required', 'integer', 'min:1'],
         ];
+    }
+
+    public function getProductIds(): Collection
+    {
+        return collect($this->items)->pluck('product_id')->unique()->sort()->values();
     }
 }
