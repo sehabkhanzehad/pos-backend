@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
+    private const TOP_PRODUCTS_LIMIT = 5;
+    private const DEFAULT_DATE_RANGE_DAYS = 30;
     public function dailySales(): JsonResponse
     {
         try {
@@ -35,7 +37,7 @@ class ReportController extends Controller
     public function topProducts(): AnonymousResourceCollection
     {
         try {
-            $startDate = request('start_date', now()->subDays(30)->toDateString());
+            $startDate = request('start_date', now()->subDays(self::DEFAULT_DATE_RANGE_DAYS)->toDateString());
             $endDate = request('end_date', now()->toDateString());
 
             $topProducts = DB::table('order_items')
@@ -47,7 +49,7 @@ class ReportController extends Controller
                 ->selectRaw('products.id, products.name, SUM(order_items.qty) as total_sold')
                 ->groupBy('products.id', 'products.name')
                 ->orderByDesc('total_sold')
-                ->limit(5)
+                ->limit(self::TOP_PRODUCTS_LIMIT)
                 ->get();
 
             return ReportResource::collection($topProducts);
