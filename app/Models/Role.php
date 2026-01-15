@@ -34,8 +34,8 @@ class Role extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function users(): MorphToMany
+    public function staffs(): MorphToMany
     {
-        return $this->morphedByMany(User::class, 'assignable', 'model_roles');
+        return $this->morphedByMany(User::class, 'assignable', 'model_roles', 'role_id', 'user_id');
     }
 }

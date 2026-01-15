@@ -6,7 +6,7 @@ use App\Http\Resources\Traits\JsonApiRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RoleResource extends JsonResource
+class OrderItemResource extends JsonResource
 {
     use JsonApiRelationship;
 
@@ -18,19 +18,21 @@ class RoleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'type' => 'role',
+            'type' => 'order-item',
             'id' => $this->id,
             'attributes' => [
-                'name' => $this->name,
+                'qty' => $this->qty,
+                'unitPrice' => $this->unit_price,
+                'subTotal' => $this->sub_total,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ],
             'relationships' => [
-                'permissions' => $this->relationship('permissions', 'permission'),
-                'staffs' => $this->relationship('staffs', 'staff'),
+                'product' => $this->relationship('product', 'product'),
+                'order' => $this->relationship('order', 'order'),
             ],
             'included' => $this->when(
-                $this->relationLoaded('permissions') || $this->relationLoaded('staffs'),
+                $this->relationLoaded('product') || $this->relationLoaded('order'),
                 $this->buildIncluded()
             ),
         ];
@@ -40,12 +42,12 @@ class RoleResource extends JsonResource
     {
         $included = collect();
 
-        if ($this->relationLoaded('permissions')) {
-            $included = $included->merge($this->permissions->map(PermissionResource::make(...)));
+        if ($this->relationLoaded('product')) {
+            $included->push(ProductResource::make($this->product));
         }
 
-        if ($this->relationLoaded('staffs')) {
-            $included = $included->merge($this->staffs->map(StaffResource::make(...)));
+        if ($this->relationLoaded('order')) {
+            $included->push(OrderResource::make($this->order));
         }
 
         return $included->toArray();

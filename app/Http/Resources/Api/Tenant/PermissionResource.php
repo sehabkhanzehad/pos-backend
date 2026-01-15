@@ -25,9 +25,26 @@ class PermissionResource extends JsonResource
             ],
             'relationships' => [
                 'roles' => $this->relationship('roles', 'role'),
-                'users' => $this->relationship('users', 'user'),
+                'staffs' => $this->relationship('staffs', 'staff'),
             ],
-            // included relationships
+            'included' => $this->when(
+                $this->relationLoaded('roles') || $this->relationLoaded('staffs'),
+                $this->buildIncluded()
+            ),
         ];
+    }
+
+    private function buildIncluded(): array
+    {
+        $included = collect();
+
+        if ($this->relationLoaded('roles')) {
+            $included = $included->merge($this->roles->map(RoleResource::make(...)));
+        }
+        if ($this->relationLoaded('staffs')) {
+            $included = $included->merge($this->staffs->map(StaffResource::make(...)));
+        }
+
+        return $included->toArray();
     }
 }

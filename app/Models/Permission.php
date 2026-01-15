@@ -35,8 +35,8 @@ class Permission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function users(): MorphToMany
+    public function staffs(): MorphToMany
     {
-        return $this->morphedByMany(User::class, 'assignable', 'model_permissions');
+        return $this->morphedByMany(User::class, 'assignable', 'model_permissions', 'permission_id', 'user_id');
     }
 }

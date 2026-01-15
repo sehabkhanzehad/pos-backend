@@ -72,7 +72,7 @@ class OrderController extends Controller
 
     public function show(Order $order): OrderResource
     {
-        return OrderResource::make($order->load(['customer', 'creator', 'items.product']));
+        return new OrderResource($order->load(includes()));
     }
 
     public function paid(Order $order): JsonResponse

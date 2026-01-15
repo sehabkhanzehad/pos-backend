@@ -7,7 +7,7 @@ Route::get('/test', fn() => response()->json(['message' => 'API is working.']));
 
 require __DIR__ . '/api/auth.php';
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     require __DIR__ . '/api/tenant.php';
 
     Route::middleware(ResolveTenant::class)->group(function () {

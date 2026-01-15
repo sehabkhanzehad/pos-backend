@@ -29,14 +29,4 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
-
-    public function isLowStock(): bool
-    {
-        return $this->stock_quantity <= $this->low_stock_threshold;
-    }
-
-    public function incrementStock(int $quantity): void
-    {
-        $this->increment('stock_qty', $quantity);
-    }
 }

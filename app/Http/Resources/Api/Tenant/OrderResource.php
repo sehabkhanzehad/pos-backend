@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\Tenant;
 
+use App\Http\Resources\Api\UserResource;
 use App\Http\Resources\Traits\JsonApiRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -34,6 +35,29 @@ class OrderResource extends JsonResource
                 'creator' => $this->relationship('creator', 'user'),
                 'items' => $this->relationship('items', 'order-item'),
             ],
+            'included' => $this->when(
+                $this->relationLoaded('customer') || $this->relationLoaded('creator') || $this->relationLoaded('items'),
+                $this->buildIncluded()
+            ),
         ];
+    }
+
+    private function buildIncluded(): array
+    {
+        $included = collect();
+
+        if ($this->relationLoaded('customer')) {
+            $included->push(CustomerResource::make($this->customer));
+        }
+
+        if ($this->relationLoaded('creator')) {
+            $included->push(UserResource::make($this->creator));
+        }
+
+        if ($this->relationLoaded('items')) {
+            $included = $included->merge($this->items->map(OrderItemResource::make(...)));
+        }
+
+        return $included->toArray();
     }
 }
