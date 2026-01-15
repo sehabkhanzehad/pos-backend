@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\SignInRequest;
 use App\Http\Requests\Api\Auth\SignUpRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -15,7 +16,7 @@ class AuthController extends Controller
     {
         $user = User::create($request->validated());
 
-        $user->createDefaultTenant();
+        $user->createTenant(default: true);
 
         return $this->success('Sign up successful.', 201);
     }
@@ -34,9 +35,9 @@ class AuthController extends Controller
         ]);
     }
 
-    public function user(Request $request)
+    public function user(Request $request): UserResource
     {
-        return $request->user();
+        return UserResource::make($request->user());
     }
 
     public function signOut(Request $request): JsonResponse

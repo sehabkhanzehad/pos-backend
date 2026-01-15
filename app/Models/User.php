@@ -54,11 +54,11 @@ class User extends Authenticatable
     }
 
     // Helpers
-    public function createDefaultTenant(): Tenant
+    public function createTenant(string $name = "Default", bool $default = false): Tenant
     {
         return $this->tenants()->create([
-            'name' => "Default",
-            'default' => true,
+            'name' => $name,
+            'default' => $default,
         ]);
     }
 

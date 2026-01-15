@@ -10,8 +10,6 @@ class Product extends Model
 {
     use BelongsToTenant;
 
-    use BelongsToTenant;
-
     protected $fillable = [
         'tenant_id',
         'name',
@@ -20,6 +18,7 @@ class Product extends Model
         'stock_qty',
         'low_stock_threshold',
         'status',
+        'description',
     ];
 
     protected $casts = [

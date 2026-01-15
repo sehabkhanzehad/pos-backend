@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->decimal('total_amount', 10, 2);
 
-            $table->foreignId('created_by')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignId('created_by')->constrained('users')->restrictOnDelete()->cascadeOnUpdate();
 
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();

@@ -27,7 +27,7 @@ class StoreProductRequest extends FormRequest
                 'required',
                 'string',
                 'max:100',
-                uniqueInTenant('product', 'sku')
+                uniqueInTenant('products', 'sku')
             ],
             'price' => ['required', 'numeric', 'min:0'],
             'stock_qty' => ['required', 'integer', 'min:0'],

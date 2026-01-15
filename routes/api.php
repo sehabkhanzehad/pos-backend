@@ -8,7 +8,7 @@ Route::get('/test', fn() => response()->json(['message' => 'API is working.']));
 require __DIR__ . '/api/auth.php';
 
 Route::middleware('auth:sanctum')->group(function () {
-    // require __DIR__ . '/api/tenant.php';
+    require __DIR__ . '/api/tenant.php';
 
     Route::middleware(ResolveTenant::class)->group(function () {
         require __DIR__ . '/api/staff.php';
@@ -16,5 +16,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         require __DIR__ . '/api/product.php';
         require __DIR__ . '/api/customer.php';
+        require __DIR__ . '/api/order.php';
     });
 });

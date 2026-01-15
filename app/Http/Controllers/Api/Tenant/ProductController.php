@@ -23,39 +23,26 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request): JsonResponse
     {
-        try {
-            Product::create([
-                'name' => $request->name,
-                'sku' => $request->sku,
-                'price' => $request->price,
-                'stock_qty' => $request->stock_qty,
-                'low_stock_threshold' => $request->low_stock_threshold,
-            ]);
+        $product = Product::create([
+            'name' => $request->name,
+            'sku' => $request->sku,
+            'price' => $request->price,
+            'stock_qty' => $request->stock_qty,
+            'low_stock_threshold' => $request->low_stock_threshold,
+        ]);
 
-            return $this->success('Product created successfully.');
-        } catch (\Exception $e) {
-            return $this->error("Failed to create product.");
-        }
+        return $this->success('Product created successfully.', data: [
+            'product' => new ProductResource($product)
+        ]);
     }
 
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product): JsonResponse
     {
-        $product->fill($request->only([
-            'name',
-            'sku',
-            'price',
-            'stock_qty',
-            'low_stock_threshold',
-            'status'
-        ]));
+        $product->update($request->validated());
 
-        try {
-            $product->save();
-        } catch (\Exception $e) {
-            //
-        }
-
-        return new ProductResource($product);
+        return $this->success('Product updated successfully.', data: [
+            'product' => new ProductResource($product)
+        ]);
     }
 
     public function destroy(Product $product): JsonResponse

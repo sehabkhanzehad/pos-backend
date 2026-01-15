@@ -22,9 +22,9 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->index(['tenant_id', 'order_id']);
-            $table->index(['tenant_id', 'product_id']);
-            $table->index(['tenant_id', 'created_at']);
+            $table->index('order_id');
+            $table->index('product_id');
+            $table->index(['order_id', 'product_id']);
         });
     }
     /**

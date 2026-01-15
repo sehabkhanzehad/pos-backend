@@ -28,10 +28,10 @@ enum Permission: string
     case CustomerUpdate = 'customer.update';
     case CustomerDelete = 'customer.delete';
 
-    // case OrderView = 'order.view';
-    // case OrderCreate = 'order.create';
-    // case OrderUpdate = 'order.update';
-    // case OrderDelete = 'order.delete';
+    case OrderView = 'order.view';
+    case OrderCreate = 'order.create';
+    case OrderUpdate = 'order.update';
+    case OrderDelete = 'order.delete';
 
     // case ReportView = 'report.view';
     // case ReportCreate = 'report.create';
