@@ -14,6 +14,13 @@ class ReportController extends Controller
 {
     private const TOP_PRODUCTS_LIMIT = 5;
     private const DEFAULT_DATE_RANGE_DAYS = 30;
+
+    /**
+     * Retrieves daily sales summary for a specific date.
+     * Includes total orders and revenue for paid orders.
+     *
+     * @return JsonResponse
+     */
     public function dailySales(): JsonResponse
     {
         try {
@@ -34,6 +41,12 @@ class ReportController extends Controller
         }
     }
 
+    /**
+     * Retrieves top-selling products within a date range.
+     * Joins order_items, orders, and products to calculate total sold quantity.
+     *
+     * @return AnonymousResourceCollection
+     */
     public function topProducts(): AnonymousResourceCollection
     {
         try {
@@ -61,6 +74,11 @@ class ReportController extends Controller
         }
     }
 
+    /**
+     * Retrieves products with low stock (below threshold).
+     *
+     * @return AnonymousResourceCollection
+     */
     public function lowStock(): AnonymousResourceCollection
     {
         try {

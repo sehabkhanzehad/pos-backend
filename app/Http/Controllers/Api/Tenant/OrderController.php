@@ -12,6 +12,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OrderController extends Controller
 {
+    /**
+     * Retrieves a paginated list of orders with related data.
+     *
+     * @return AnonymousResourceCollection
+     */
     public function index(): AnonymousResourceCollection
     {
         return OrderResource::collection(Order::with(includes())
@@ -19,6 +24,13 @@ class OrderController extends Controller
             ->paginate(perPage()));
     }
 
+    /**
+     * Creates a new order using the OrderService.
+     *
+     * @param StoreOrderRequest $request Validated request data.
+     * @param OrderService $orderService Service for order creation logic.
+     * @return JsonResponse
+     */
     public function store(StoreOrderRequest $request, OrderService $orderService): JsonResponse
     {
         try {
@@ -31,6 +43,12 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * Retrieves details of a specific order.
+     *
+     * @param Order $order The order instance.
+     * @return JsonResponse|OrderResource
+     */
     public function show(Order $order): JsonResponse|OrderResource
     {
         try {
@@ -40,6 +58,12 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * Marks an order as paid.
+     *
+     * @param Order $order The order to mark as paid.
+     * @return JsonResponse
+     */
     public function paid(Order $order): JsonResponse
     {
         try {
@@ -52,6 +76,13 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * Cancels an order and restores stock using OrderService.
+     *
+     * @param Order $order The order to cancel.
+     * @param OrderService $orderService Service for cancellation logic.
+     * @return JsonResponse
+     */
     public function cancel(Order $order, OrderService $orderService): JsonResponse
     {
         try {
