@@ -3,6 +3,8 @@
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Context;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 
 if (!function_exists('currentTenant')) {
     function currentTenant(): ?Tenant
@@ -39,5 +41,14 @@ if (!function_exists('perPage')) {
         if (!is_numeric($perPage) || (int) $perPage <= 0) return 10;
 
         return min((int) $perPage, 50);
+    }
+}
+
+if (!function_exists('uniqueInTenant')) {
+    function uniqueInTenant(string $table, string $column, $ignore = null): Unique
+    {
+        return Rule::unique($table, $column)
+            ->where('tenant_id', currentTenant()->id)
+            ->ignore($ignore);
     }
 }

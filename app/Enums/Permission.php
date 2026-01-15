@@ -18,15 +18,15 @@ enum Permission: string
     case RoleUpdate = 'role.update';
     case RoleDelete = 'role.delete';
 
-    // case ProductView = 'product.view';
-    // case ProductCreate = 'product.create';
-    // case ProductUpdate = 'product.update';
-    // case ProductDelete = 'product.delete';
+    case ProductView = 'product.view';
+    case ProductCreate = 'product.create';
+    case ProductUpdate = 'product.update';
+    case ProductDelete = 'product.delete';
 
-    // case CustomerView = 'customer.view';
-    // case CustomerCreate = 'customer.create';
-    // case CustomerUpdate = 'customer.update';
-    // case CustomerDelete = 'customer.delete';
+    case CustomerView = 'customer.view';
+    case CustomerCreate = 'customer.create';
+    case CustomerUpdate = 'customer.update';
+    case CustomerDelete = 'customer.delete';
 
     // case OrderView = 'order.view';
     // case OrderCreate = 'order.create';

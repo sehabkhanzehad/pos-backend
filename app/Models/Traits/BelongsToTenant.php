@@ -14,6 +14,11 @@ trait BelongsToTenant
         return $this->belongsTo(Tenant::class);
     }
 
+    public function belongsToCurrentTenant(): bool
+    {
+        return $this->tenant_id === currentTenant()->id;
+    }
+
     protected static function bootBelongsToTenant(): void
     {
         if (!currentTenant()) return;

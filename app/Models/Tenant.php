@@ -29,6 +29,21 @@ class Tenant extends Model
         return $this->hasMany(User::class, 'tenant_id');
     }
 
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class);
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function canAccess(User $user): bool
     {
         return $user->isOwner() ? $this->owner()->is($user) : $user->tenant()->is($this);

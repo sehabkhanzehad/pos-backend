@@ -13,5 +13,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware(ResolveTenant::class)->group(function () {
         require __DIR__ . '/api/staff.php';
         require __DIR__ . '/api/role-permission.php';
+
+        require __DIR__ . '/api/product.php';
+        require __DIR__ . '/api/customer.php';
     });
 });
