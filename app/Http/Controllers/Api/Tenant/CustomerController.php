@@ -19,9 +19,13 @@ class CustomerController extends Controller
 
     public function store(StoreCustomerRequest $request): JsonResponse
     {
-        Customer::create($request->validated());
+        $customer = Customer::create($request->validated());
 
-        return $this->success('Customer created successfully.', 201);
+        return $this->success(
+            'Customer created successfully.',
+            201,
+            ["customer" => new CustomerResource($customer)]
+        );
     }
 
     public function show(Customer $customer)
@@ -31,9 +35,11 @@ class CustomerController extends Controller
 
     public function update(UpdateCustomerRequest $request, Customer $customer): JsonResponse
     {
-        Customer::update($request->validated);
+        $customer->update($request->validated());
 
-        return $this->success('Customer updated successfully.');
+        return $this->success('Customer updated successfully.', data: [
+            'customer' => new CustomerResource($customer),
+        ]);
     }
 
     public function destroy(Customer $customer): JsonResponse

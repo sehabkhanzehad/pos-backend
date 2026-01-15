@@ -5,14 +5,22 @@ namespace App\Http\Controllers\Api\Tenant;
 use App\Enums\OruderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Tenant\Order\StoreOrderRequest;
+use App\Http\Resources\Api\Tenant\OrderResource;
 use App\Models\Order;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OrderController extends Controller
 {
+    public function index(): AnonymousResourceCollection
+    {
+        return OrderResource::collection(Order::with(includes())
+            ->latest()
+            ->paginate(perPage()));
+    }
+
     public function store(StoreOrderRequest $request): JsonResponse
     {
         try {
@@ -70,8 +78,6 @@ class OrderController extends Controller
 
     public function paid(Order $order): JsonResponse
     {
-        if (!$order->isPending()) return $this->error("Only pending orders can be marked as paid.", 400);
-
         $order->markAsPaid();
 
         return $this->success("Order marked as paid successfully.");
@@ -79,8 +85,6 @@ class OrderController extends Controller
 
     public function cancel(Order $order): JsonResponse
     {
-        if ($order->isCancelled()) return $this->error("Order is already cancelled.", 400);
-
         try {
             DB::beginTransaction();
 
