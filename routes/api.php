@@ -17,5 +17,6 @@ Route::middleware('auth:sanctum')->group(function () {
         require __DIR__ . '/api/product.php';
         require __DIR__ . '/api/customer.php';
         require __DIR__ . '/api/order.php';
+        require __DIR__ . '/api/setting.php';
     });
 });

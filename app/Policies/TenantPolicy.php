@@ -63,4 +63,9 @@ class TenantPolicy
     {
         return false;
     }
+
+    public function reset(User $user, Tenant $tenant): bool
+    {
+        return $user->isOwner() && $tenant->owner()->is($user);
+    }
 }

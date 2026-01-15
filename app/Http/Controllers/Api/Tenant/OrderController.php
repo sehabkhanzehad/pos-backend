@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Tenant;
 
-use App\Enums\OruderStatus;
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Tenant\Order\StoreOrderRequest;
 use App\Http\Resources\Api\Tenant\OrderResource;
@@ -32,7 +32,7 @@ class OrderController extends Controller
             foreach ($request->items as $item) {
                 $product = Product::lockForUpdate()->findOrFail($item['product_id']);
 
-                if ($product->stock_quantity < $item['qty']) throw new \Exception("Insufficient stock for product ID: {$product->id}");
+                if ($product->stock_qty < $item['qty']) throw new \Exception("Insufficient stock for product ID: {$product->id}");
 
                 $subtotal = $product->price * $item['qty'];
                 $totalAmount += $subtotal;
@@ -50,7 +50,7 @@ class OrderController extends Controller
             $order = Order::create([
                 'customer_id' => $request->customer_id,
                 'total_amount' => $totalAmount,
-                'status' => OruderStatus::Pending,
+                'status' => OrderStatus::Pending,
                 'created_by' => $request->user()->id,
             ]);
 
@@ -66,17 +66,12 @@ class OrderController extends Controller
         }
     }
 
-    public function show(Order $order): JsonResponse
+    public function show(Order $order): OrderResource
     {
-        $order->load(['customer', 'creator', 'items.product']);
-
-        return response()->json([
-            'success' => true,
-            'data' => $order,
-        ]);
+        return OrderResource::make($order->load(['customer', 'creator', 'items.product']));
     }
 
-    public function paid(Order $order): JsonResponse
+    public function paid(Order $order): JsonResponse 
     {
         $order->markAsPaid();
 
@@ -90,7 +85,7 @@ class OrderController extends Controller
 
             foreach ($order->items as $item) {
                 $product = Product::lockForUpdate()->findOrFail($item->product_id);
-                $product->increment('stock_qty', $item->quantity);
+                $product->increment('stock_qty', $item->qty);
             }
 
             $order->markAsCancelled();

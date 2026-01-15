@@ -20,6 +20,15 @@ if (!function_exists('currentUser')) {
     }
 }
 
+if (!function_exists('existsInTenant')) {
+    function existsInTenant($table, $column)
+    {
+        // Note: This function uses the current tenant
+        return Rule::exists($table, $column)
+            ->where('tenant_id', currentTenant()->id);
+    }
+}
+
 if (!function_exists('includes')) {
     function includes(array $relations = []): array
     {
@@ -47,6 +56,7 @@ if (!function_exists('perPage')) {
 if (!function_exists('uniqueInTenant')) {
     function uniqueInTenant(string $table, string $column, $ignore = null): Unique
     {
+        // Note: This function uses the current tenant
         return Rule::unique($table, $column)
             ->where('tenant_id', currentTenant()->id)
             ->ignore($ignore);

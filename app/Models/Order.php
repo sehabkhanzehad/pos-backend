@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\OruderStatus;
+use App\Enums\OrderStatus;
 use App\Models\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,7 +22,7 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'status' => OruderStatus::class,
+        'status' => OrderStatus::class,
         'total_amount' => 'decimal:2',
         'paid_at' => 'datetime',
         'cancelled_at' => 'datetime',
@@ -47,29 +47,29 @@ class Order extends Model
     // Helpers
     public function isPending(): bool
     {
-        return $this->status === OruderStatus::Pending;
+        return $this->status === OrderStatus::Pending;
     }
 
     public function isPaid(): bool
     {
-        return $this->status === OruderStatus::Paid;
+        return $this->status === OrderStatus::Paid;
     }
 
     public function isCancelled(): bool
     {
-        return $this->status === OruderStatus::Cancelled;
+        return $this->status === OrderStatus::Cancelled;
     }
 
     public function markAsCancelled(): void
     {
-        $this->status = OruderStatus::Cancelled;
+        $this->status = OrderStatus::Cancelled;
         $this->cancelled_at = now();
         $this->save();
     }
 
     public function markAsPaid(): void
     {
-        $this->status = OruderStatus::Paid;
+        $this->status = OrderStatus::Paid;
         $this->paid_at = now();
         $this->save();
     }
@@ -79,7 +79,7 @@ class Order extends Model
         parent::boot();
 
         static::creating(function ($order) {
-            $order->order_number = 'ORD-' . strtoupper(uniqid());
+            $order->order_no = 'ORD-' . strtoupper(uniqid());
         });
     }
 }
