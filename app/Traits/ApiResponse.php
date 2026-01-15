@@ -35,6 +35,7 @@ trait ApiResponse
      * @param string $message    The error message.
      * @param int    $statusCode HTTP status code.
      * @param array  $errors     Additional error details.
+     * @param \Exception|null $e The exception instance for logging (optional).
      * @return \Illuminate\Http\JsonResponse
      */
     public static function error(string $message = 'Error.', int $statusCode = 500, array $errors = [], ?\Exception $e = null): JsonResponse
