@@ -15,9 +15,6 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         $this->call([
@@ -27,7 +24,6 @@ class DatabaseSeeder extends Seeder
         [$owner, $staff, $tenant] = $this->createUser();
 
         Product::factory(20)->create(['tenant_id' => $tenant->id]);
-
         Customer::factory(10)->create(['tenant_id' => $tenant->id]);
 
         $customers = Customer::where('tenant_id', $tenant->id)->get();
@@ -87,7 +83,7 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
 
-            $order->update(['total_amount' => $order->items->sum('sub_total')]);
+            $order->update(['total_amount' => $order->items()->sum('sub_total')]);
         }
     }
 }
