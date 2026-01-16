@@ -44,12 +44,13 @@ class OrderService
                     'product_id' => $product->id,
                     'qty' => $item['qty'],
                     'unit_price' => $product->price,
-                    'subtotal' => $subtotal,
+                    'sub_total' => $subtotal,
                 ];
             }
 
             $order = Order::create([
                 'customer_id' => $data['customer_id'] ?? null,
+                'order_no' => 'ORD-' . strtoupper(uniqid()),
                 'total_amount' => $totalAmount,
                 'status' => OrderStatus::Pending,
                 'created_by' => currentUser()->id,

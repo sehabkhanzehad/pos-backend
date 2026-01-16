@@ -75,13 +75,4 @@ class Order extends Model
         $this->paid_at = now();
         $this->save();
     }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(function ($order) {
-            $order->order_no = 'ORD-' . strtoupper(uniqid());
-        });
-    }
 }
