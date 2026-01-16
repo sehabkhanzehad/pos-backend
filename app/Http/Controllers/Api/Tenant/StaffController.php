@@ -29,15 +29,15 @@ class StaffController extends Controller
     {
         $password = Str::random(8);
 
-        $user = currentTenant()->staffs()->create([
+        $staff = currentTenant()->staffs()->create([
             'name' => $request->name,
             'email' => $request->email,
             'role' => UserRole::Staff,
             'password' => $password,
         ]);
 
-        $user->assignRoles($request->roles);
-        $user->givePermissions($request->permissions ?? []);
+        $staff->assignRoles($request->roles);
+        $staff->givePermissions($request->permissions ?? []);
 
         return $this->success('Staff added successfully.', 201, [
             'password' => $password
