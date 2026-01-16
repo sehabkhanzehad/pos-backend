@@ -28,7 +28,7 @@ A scalable, secure, and multi-tenant Point-of-Sale (POS) backend system built wi
 - **Reporting**: Optimized reports for daily sales, top-selling products, and low-stock items.
 - **Security**: Form request validation, mass assignment protection, rate limiting, and secure error handling.
 - **Performance**: Eager loading, optimized queries, and database indexing.
-- **API Design**: RESTful endpoints with consistent JSON responses, pagination, and Laravel API Resources.
+- **Background Jobs**: Top products report uses a queued job (`GenerateTopProductsReport`) for heavy queries, with results cached for 1 hour to improve performance.
 
 ## Requirements
 
@@ -94,6 +94,11 @@ A scalable, secure, and multi-tenant Point-of-Sale (POS) backend system built wi
 8. **Start the Server**:
    ```bash
    php artisan serve
+   ```
+
+9. **Run Queue Worker** (for background jobs):
+   ```bash
+   php artisan queue:work
    ```
 
 The API will be available at `http://localhost:8000/api`.
@@ -313,7 +318,7 @@ For a full Postman collection, import the following JSON (save as `pos-backend.p
 - **Optimized Queries**: Raw SQL in reports (e.g., joins for top products) for speed.
 - **Database Indexes**: Added on `tenant_id`, `status`, `created_at`, `sku` (unique per tenant) to speed queries.
 - **Rate Limiting**: 60 requests/min for auth, 30 for reports to prevent abuse.
-- **Caching**: Not implemented yet, but can be added for product lists.
+- **Background Jobs**: Top products report uses a queued job (`GenerateTopProductsReport`) for heavy queries, with results cached for 1 hour to improve performance.
 - **Trade-offs**: Prioritized read performance over write complexity; transactions add overhead but ensure data integrity.
 
 ## Testing

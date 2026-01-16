@@ -4,17 +4,16 @@ namespace App\Http\Controllers\Api\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Tenant\ReportResource;
+use App\Jobs\TopProductsReportJob;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
 
 class ReportController extends Controller
 {
-    private const TOP_PRODUCTS_LIMIT = 5;
-    private const DEFAULT_DATE_RANGE_DAYS = 30;
-
     /**
      * Retrieves daily sales summary for a specific date.
      * Includes total orders and revenue for paid orders.
@@ -23,55 +22,40 @@ class ReportController extends Controller
      */
     public function dailySales(): JsonResponse
     {
-        try {
-            $date = request('date', now()->toDateString());
+        $date = request('date', now()->toDateString());
 
-            $summary = Order::query()
-                ->whereDate('created_at', $date)
-                ->where('status', 'paid')
-                ->selectRaw('COUNT(*) as total_orders, SUM(total_amount) as total_revenue')
-                ->first();
+        $summary = Order::query()
+            ->whereDate('created_at', $date)
+            ->where('status', 'paid')
+            ->selectRaw('COUNT(*) as total_orders, SUM(total_amount) as total_revenue')
+            ->first();
 
-            return $this->success('Daily sales summary retrieved.', data: [
-                'summary' => $summary
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Daily sales report failed: ' . $e->getMessage());
-            return $this->error('Failed to retrieve daily sales.', 500);
-        }
+        return response()->json([
+            'date' => $date,
+            'total_orders' => $summary->total_orders ?? 0,
+            'total_revenue' => $summary->total_revenue ?? 0.00,
+        ]);
     }
 
     /**
      * Retrieves top-selling products within a date range.
-     * Joins order_items, orders, and products to calculate total sold quantity.
+     * Uses background job for heavy queries; returns cached result if available.
      *
-     * @return AnonymousResourceCollection
+     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function topProducts(): AnonymousResourceCollection
+    public function topProducts(): AnonymousResourceCollection|JsonResponse
     {
-        try {
-            $startDate = request('start_date', now()->subDays(self::DEFAULT_DATE_RANGE_DAYS)->toDateString());
-            $endDate = request('end_date', now()->toDateString());
+        $startDate = request('start_date', now()->subDays(30)->toDateString());
+        $endDate = request('end_date', now()->toDateString());
+        $cacheKey = "top_products_" . currentTenant()->id . "_{$startDate}_{$endDate}";
 
-            $topProducts = DB::table('order_items')
-                ->join('orders', 'order_items.order_id', '=', 'orders.id')
-                ->join('products', 'order_items.product_id', '=', 'products.id')
-                ->where('orders.status', 'paid')
-                ->whereBetween('orders.created_at', [$startDate, $endDate])
-                ->where('products.tenant_id', currentTenant()->id)
-                ->selectRaw('products.id, products.name, SUM(order_items.qty) as total_sold')
-                ->groupBy('products.id', 'products.name')
-                ->orderByDesc('total_sold')
-                ->limit(self::TOP_PRODUCTS_LIMIT)
-                ->get();
+        $topProducts = Cache::get($cacheKey);
 
-            return ReportResource::collection($topProducts);
-        } catch (\Exception $e) {
-            \Log::error('Top products report failed: ' . $e->getMessage());
-            // For collections, return empty or error, but since it's AnonymousResourceCollection, perhaps throw or handle differently.
-            // But to keep simple, log and return empty.
-            return ReportResource::collection(collect());
-        }
+        if ($topProducts) return ReportResource::collection($topProducts);
+
+        TopProductsReportJob::dispatch($startDate, $endDate, currentTenant()->id);
+
+        return $this->success('Report is being generated. Please check back later.', 202);
     }
 
     /**
@@ -81,16 +65,11 @@ class ReportController extends Controller
      */
     public function lowStock(): AnonymousResourceCollection
     {
-        try {
-            $lowStockProducts = Product::query()
-                ->where('stock_qty', '<=', DB::raw('low_stock_threshold'))
-                ->select('id', 'name', 'sku', 'stock_qty', 'low_stock_threshold')
-                ->get();
+        $lowStockProducts = Product::query()
+            ->where('stock_qty', '<=', DB::raw('low_stock_threshold'))
+            ->select('id', 'name', 'sku', 'stock_qty', 'low_stock_threshold')
+            ->get();
 
-            return ReportResource::collection($lowStockProducts);
-        } catch (\Exception $e) {
-            \Log::error('Low stock report failed: ' . $e->getMessage());
-            return ReportResource::collection(collect());
-        }
+        return ReportResource::collection($lowStockProducts ?? collect());
     }
 }
