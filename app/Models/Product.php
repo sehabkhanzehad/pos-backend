@@ -25,6 +25,7 @@ class Product extends Model
         'price' => 'decimal:2',
     ];
 
+    // Relations
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
