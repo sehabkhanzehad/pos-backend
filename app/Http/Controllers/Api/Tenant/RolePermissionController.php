@@ -36,7 +36,7 @@ class RolePermissionController extends Controller
 
     public function show(Role $role): RoleResource
     {
-        return new RoleResource($role);
+        return new RoleResource($role->load(includes()));
     }
 
     public function update(UpdateRoleRequest $request, Role $role): JsonResponse

@@ -14,7 +14,12 @@ class CustomerController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        return CustomerResource::collection(Customer::query()->latest()->paginate(perPage()));
+        return CustomerResource::collection(
+            Customer::query()
+                ->with(includes())
+                ->latest()
+                ->paginate(perPage())
+        );
     }
 
     public function store(StoreCustomerRequest $request): JsonResponse
@@ -35,7 +40,7 @@ class CustomerController extends Controller
 
     public function show(Customer $customer): CustomerResource
     {
-        return new CustomerResource($customer);
+        return new CustomerResource($customer->load(includes()));
     }
 
     public function update(UpdateCustomerRequest $request, Customer $customer): JsonResponse

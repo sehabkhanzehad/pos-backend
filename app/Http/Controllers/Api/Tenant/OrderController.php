@@ -19,9 +19,11 @@ class OrderController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        return OrderResource::collection(Order::with(includes())
-            ->latest()
-            ->paginate(perPage()));
+        return OrderResource::collection(
+            Order::with(includes())
+                ->latest()
+                ->paginate(perPage())
+        );
     }
 
     /**

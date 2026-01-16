@@ -46,7 +46,7 @@ class StaffController extends Controller
 
     public function show(User $user): StaffResource
     {
-        return new StaffResource($user);
+        return new StaffResource($user->load(includes()));
     }
 
     public function update(UpdateStaffRequest $request, User $user): JsonResponse
