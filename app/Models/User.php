@@ -8,10 +8,10 @@ use App\Enums\Permission as EnumPermission;
 use App\Enums\UserRole;
 use App\Models\Traits\HasPermissions;
 use App\Models\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -22,8 +22,9 @@ class User extends Authenticatable
         HasFactory,
         Notifiable;
 
-    use HasRoles;
-    use HasPermissions;
+    // For Staff
+    use HasRoles,
+        HasPermissions;
 
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -42,6 +43,16 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    // Relations
+    public function defaultTenant(): Relation
+    {
+        return match (true) {
+            $this->isOwner() => $this->hasOne(Tenant::class, 'user_id')->default(),
+            $this->isStaff() => $this->tenant(),
+            default => throw new \Exception("Invalid user role for tenant relation."),
+        };
+    }
 
     public function tenants(): HasMany
     {
@@ -76,6 +87,4 @@ class User extends Authenticatable
     {
         return $this->isOwner() || $this->hasPermission($permission);
     }
-
-    // Scopes
 }

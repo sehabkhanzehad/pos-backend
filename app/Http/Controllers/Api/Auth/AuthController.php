@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\SignInRequest;
 use App\Http\Requests\Api\Auth\SignUpRequest;
+use App\Http\Resources\Api\TenantResource;
 use App\Http\Resources\Api\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -25,13 +26,18 @@ class AuthController extends Controller
     {
         $request->authenticate();
 
-        $token = $request->authenticatedUser()
-            ->createToken(name: 'auth_token', expiresAt: $request->getTokenExpiration())
-            ->plainTextToken;
+        $user = $request->authenticatedUser();
+
+        $token = $user->createToken(name: 'auth_token', expiresAt: $request->getTokenExpiration())->plainTextToken;
 
         return $this->success('Sign in successful.', 200, [
-            'accessToken' => $token,
-            'tokenType' => 'Bearer',
+            'token' => [
+                'accessToken' => $token,
+                'tokenType' => 'Bearer',
+                'expiresIn' => $request->getTokenExpiration()->getTimestamp(),
+            ],
+            'user' => new UserResource($user),
+            'defaultTenant' => new TenantResource($user->defaultTenant),
         ]);
     }
 

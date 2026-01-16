@@ -8,8 +8,8 @@ Route::get('/test', fn() => response()->json(['message' => 'API is working.']))-
 require __DIR__ . '/api/auth.php';
 
 Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
-    require __DIR__ . '/api/tenant.php';
     // Can manage only owner
+    require __DIR__ . '/api/tenant.php';
 
     // Can manage owner and staff (based on permissions)
     Route::middleware(ResolveTenant::class)->group(function () {

@@ -23,6 +23,7 @@ class Tenant extends Model
         'default',
     ];
 
+    // Relations
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -48,8 +49,15 @@ class Tenant extends Model
         return $this->hasMany(Order::class);
     }
 
+    // Helpers
     public function canAccess(User $user): bool
     {
         return $user->isOwner() ? $this->owner()->is($user) : $user->tenant()->is($this);
+    }
+
+    // Scopes
+    public function scopeDefault($query)
+    {
+        return $query->where('default', true);
     }
 }
