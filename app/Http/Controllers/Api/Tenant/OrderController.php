@@ -53,11 +53,7 @@ class OrderController extends Controller
      */
     public function show(Order $order): JsonResponse|OrderResource
     {
-        try {
-            return new OrderResource($order->load(includes()));
-        } catch (\Exception $e) {
-            return $this->error("Failed to retrieve order details.", 500);
-        }
+        return new OrderResource($order->load(includes()));
     }
 
     /**
@@ -68,14 +64,9 @@ class OrderController extends Controller
      */
     public function paid(Order $order): JsonResponse
     {
-        try {
-            $order->markAsPaid();
+        $order->markAsPaid();
 
-            return $this->success("Order marked as paid successfully.");
-        } catch (\Exception $e) {
-            logger()->error("Order payment failed: {$e->getMessage()}");
-            return $this->error('Failed to mark order as paid.', 500);
-        }
+        return $this->success("Order marked as paid successfully.");
     }
 
     /**
@@ -87,13 +78,8 @@ class OrderController extends Controller
      */
     public function cancel(Order $order, OrderService $orderService): JsonResponse
     {
-        try {
-            $orderService->cancelOrder($order);
+        $orderService->cancelOrder($order);
 
-            return $this->success("Order cancelled successfully.");
-        } catch (\Exception $e) {
-            logger()->error("Order cancellation failed: {$e->getMessage()}");
-            return $this->error("Failed to cancel order.", 500);
-        }
+        return $this->success("Order cancelled successfully.");
     }
 }

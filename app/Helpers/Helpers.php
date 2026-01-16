@@ -38,7 +38,12 @@ if (!function_exists('includes')) {
 
         $requestedRelations = explode(',', $include);
 
-        return array_values(array_unique([...$relations, ...$requestedRelations]));
+        // Whitelist allowed relations for security and performance
+        $allowed = ['orderItems']; // Add more as needed per controller/model
+
+        $filtered = array_intersect($requestedRelations, $allowed);
+
+        return array_values(array_unique([...$relations, ...$filtered]));
     }
 }
 

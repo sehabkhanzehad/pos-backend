@@ -24,18 +24,13 @@ class CustomerController extends Controller
 
     public function store(StoreCustomerRequest $request): JsonResponse
     {
-        try {
-            $customer = Customer::create($request->validated());
+        $customer = Customer::create($request->validated());
 
-            return $this->success(
-                'Customer created successfully.',
-                201,
-                ["customer" => new CustomerResource($customer)]
-            );
-        } catch (\Exception $e) {
-            logger()->error("Customer creation failed: {$e->getMessage()}");
-            return $this->error('Failed to create customer.', 500);
-        }
+        return $this->success(
+            'Customer created successfully.',
+            201,
+            ["customer" => new CustomerResource($customer)]
+        );
     }
 
     public function show(Customer $customer): CustomerResource
@@ -45,27 +40,17 @@ class CustomerController extends Controller
 
     public function update(UpdateCustomerRequest $request, Customer $customer): JsonResponse
     {
-        try {
-            $customer->update($request->validated());
+        $customer->update($request->validated());
 
-            return $this->success('Customer updated successfully.', data: [
-                'customer' => new CustomerResource($customer),
-            ]);
-        } catch (\Exception $e) {
-            logger()->error("Customer update failed: {$e->getMessage()}");
-            return $this->error('Failed to update customer.', 500);
-        }
+        return $this->success('Customer updated successfully.', data: [
+            'customer' => new CustomerResource($customer),
+        ]);
     }
 
     public function destroy(Customer $customer): JsonResponse
     {
-        try {
-            $customer->delete();
+        $customer->delete();
 
-            return $this->success('Customer deleted successfully.');
-        } catch (\Exception $e) {
-            logger()->error("Customer deletion failed: {$e->getMessage()}");
-            return $this->error('Failed to delete customer.', 500);
-        }
+        return $this->success('Customer deleted successfully.');
     }
 }

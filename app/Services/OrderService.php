@@ -74,11 +74,15 @@ class OrderService
      */
     public function cancelOrder(Order $order): void
     {
-        $productIds = $order->items->pluck('product_id');
-        $products = Product::whereIn('id', $productIds)->lockForUpdate()->get()->keyBy('id');
-        foreach ($order->items as $item) {
-            $products[$item->product_id]->increment('stock_qty', $item->qty);
-        }
-        $order->markAsCancelled();
+        DB::transaction(function () use ($order) {
+            $productIds = $order->items->pluck('product_id');
+            $products = Product::whereIn('id', $productIds)->lockForUpdate()->get()->keyBy('id');
+
+            foreach ($order->items as $item) {
+                $products[$item->product_id]->increment('stock_qty', $item->qty);
+            }
+
+            $order->markAsCancelled();
+        });
     }
 }
