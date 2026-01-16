@@ -1,0 +1,1218 @@
+{
+	"info": {
+		"_postman_id": "2532c04d-84c4-4b1a-9640-0f6c5c3bce1f",
+		"name": "API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32314793",
+		"_collection_link": "https://refuctoring.postman.co/workspace/pos-backend~77ea2da0-83c3-470f-bb27-f71d5b8fc368/collection/32314793-2532c04d-84c4-4b1a-9640-0f6c5c3bce1f?action=share&source=collection_link&creator=32314793"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Owner\",\r\n    \"email\": \"owner@email.com\",\r\n    \"password\": \"password\",\r\n    \"password_confirmation\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/auth/sign-up",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"auth",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"owner@email.com\",\r\n    \"password\": \"password\",\r\n    \"remember\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/auth/sign-in",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"auth",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/auth/user",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"auth",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Out",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/auth/sign-out",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"auth",
+								"sign-out"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tenant",
+			"item": [
+				{
+					"name": "Report",
+					"item": [
+						{
+							"name": "Get Daily Sales",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"customer_id\": \"c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\r\n    \"items\": [\r\n        {\r\n            \"product_id\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\r\n            \"qty\": 2\r\n        },\r\n        {\r\n            \"product_id\": \"p7g8h9i0-j1k2l3m4n5o6-a1b2c3d4-e5f6-g7h8i9j0\",\r\n            \"qty\": 1\r\n        }\r\n    ],\r\n}"
+								},
+								"url": {
+									"raw": "{{base}}/reports/daily-sales?date=16-01-2026",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"reports",
+										"daily-sales"
+									],
+									"query": [
+										{
+											"key": "date",
+											"value": "16-01-2026"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Top Products",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"customer_id\": \"c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\r\n    \"items\": [\r\n        {\r\n            \"product_id\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\r\n            \"qty\": 2\r\n        },\r\n        {\r\n            \"product_id\": \"p7g8h9i0-j1k2l3m4n5o6-a1b2c3d4-e5f6-g7h8i9j0\",\r\n            \"qty\": 1\r\n        }\r\n    ],\r\n}"
+								},
+								"url": {
+									"raw": "{{base}}/reports/daily-sales?start_date=16-01-2026&end_date=20-01-2026",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"reports",
+										"daily-sales"
+									],
+									"query": [
+										{
+											"key": "start_date",
+											"value": "16-01-2026"
+										},
+										{
+											"key": "end_date",
+											"value": "20-01-2026"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get  Low Stock",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"customer_id\": \"c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\r\n    \"items\": [\r\n        {\r\n            \"product_id\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\r\n            \"qty\": 2\r\n        },\r\n        {\r\n            \"product_id\": \"p7g8h9i0-j1k2l3m4n5o6-a1b2c3d4-e5f6-g7h8i9j0\",\r\n            \"qty\": 1\r\n        }\r\n    ],\r\n}"
+								},
+								"url": {
+									"raw": "{{base}}/reports/low-stock",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"reports",
+										"low-stock"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Staffs",
+					"item": [
+						{
+							"name": "Get Staffs",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/staffs?include=permissions,roles",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"staffs"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "permissions,roles"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Staffs",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Staff\",\r\n    \"email\": \"staff@email.com\",\r\n    \"roles\": [\r\n        1\r\n    ],\r\n    \"permissions\": [\r\n        \"staff.view\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/staffs",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"staffs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Staff",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/staffs/{{user}}?include=permissions,roles",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"staffs",
+										"{{user}}"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "permissions,roles"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Staff",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"John Doe\", // *\r\n    \"roles\": [ // *\r\n        1,\r\n        2\r\n    ],\r\n    \"permissions\": [\r\n        \"team_member.view\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/staffs/{{user}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"staffs",
+										"{{user}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Staff",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/staffs/{{user}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"staffs",
+										"{{user}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Roles & Permssions",
+					"item": [
+						{
+							"name": "Roles",
+							"item": [
+								{
+									"name": "Get Roles",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base}}/roles?include=permissions",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"roles"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "permissions"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add Role",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Test\",\r\n    \"permissions\": [\r\n        \"staff.view\",\r\n        \"staff.create\",\r\n        \"staff.update\",\r\n        \"staff.delete\"\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base}}/roles",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"roles"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Role",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base}}/roles/{{role}}?include=permissions",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"roles",
+												"{{role}}"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "permissions"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Role",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Update\",\r\n    \"permissions\": [\r\n        \"staff.create\",\r\n        \"staff.update\"\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base}}/roles/{{role}}",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"roles",
+												"{{role}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Role",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base}}/roles/{{role}}",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"roles",
+												"{{role}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Roles For Attach",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base}}/roles-for-attach",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"roles-for-attach"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Permissions",
+							"item": [
+								{
+									"name": "Get Permissions For Attach",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base}}/permissions-for-attach",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"permissions-for-attach"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Product",
+					"item": [
+						{
+							"name": "Get Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/products",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Product",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Sample Product\",\r\n    \"sku\": \"SP001\",\r\n    \"price\": 19.99,\r\n    \"stock_qty\": 100,\r\n    \"low_stock_threshold\": 10,\r\n    \"description\": \"This is description.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/products",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/products/{{product}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"products",
+										"{{product}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Product",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Sample Product\",\r\n    \"sku\": \"SP001\",\r\n    \"price\": 19.99,\r\n    \"stock_qty\": 100,\r\n    \"low_stock_threshold\": 10,\r\n    \"description\": \"This is description.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/products/{{product}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"products",
+										"{{product}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/products/{{product}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"products",
+										"{{product}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Customer",
+					"item": [
+						{
+							"name": "Get Customers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/customers?include=orders",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"customers"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "orders"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Customer",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"John Doe\",\r\n    \"phone\": \"123-456-7890\",\r\n    \"email\": \"john.doe@example.com\",\r\n    \"address\": \"123 Main St, Anytown, USA\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/customers",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"customers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Customer",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/customers/{{customer}}?include=orders",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"customers",
+										"{{customer}}"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "orders"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Customer",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"John Doe\",\r\n    \"phone\": \"123-456-7890\",\r\n    \"email\": \"john.doe@example.com\",\r\n    \"address\": \"123 Main St, Anytown, USA\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/customers/{{customer}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"customers",
+										"{{customer}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Customer",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/customers/{{customer}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"customers",
+										"{{customer}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Order",
+					"item": [
+						{
+							"name": "Get Orders",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/orders?include=customer,creator,items",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"orders"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "customer,creator,items"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Order",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"customer_id\": \"c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\r\n    \"items\": [\r\n        {\r\n            \"product_id\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\r\n            \"qty\": 2\r\n        },\r\n        {\r\n            \"product_id\": \"p7g8h9i0-j1k2l3m4n5o6-a1b2c3d4-e5f6-g7h8i9j0\",\r\n            \"qty\": 1\r\n        }\r\n    ],\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/orders",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Order",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/orders/{{order}}?customer=customer, creator,items",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"orders",
+										"{{order}}"
+									],
+									"query": [
+										{
+											"key": "customer",
+											"value": "customer, creator,items"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Mark As Paid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/orders/{{order}}/paid",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"orders",
+										"{{order}}",
+										"paid"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Mark As Cancelled",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/orders/{{order}}/cancel",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"orders",
+										"{{order}}",
+										"cancel"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Settings",
+					"item": [
+						{
+							"name": "Account",
+							"item": [
+								{
+									"name": "Update Profile",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Test\",\r\n    \"email\": \"update@email.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base}}/settings/account/profile",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"settings",
+												"account",
+												"profile"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Password",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"current_password\": \"NewPassword@123\",\r\n    \"password\": \"NewPassword@123\",\r\n    \"password_confirmation\": \"NewPassword@123\"\r\n}       ",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base}}/settings/password",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"settings",
+												"password"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "- **`name`**: (Required) The user's name. Must be a string and max 50 characters.\n    \n- **`avatar`**: (Optional)\n    \n    - If a file is sent, it must be an image (`jpg`, `jpeg`, `png`) and max size 2MB.\n        \n    - If `null` is sent, the previous avatar will be deleted.\n        \n    - If the `avatar` key is not sent, the previous avatar will remain unchanged"
+						},
+						{
+							"name": "Tenant",
+							"item": [
+								{
+									"name": "Reset Current Tenant",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"name\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base}}/settings/tenant/reset",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"settings",
+												"tenant",
+												"reset"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{Bearer}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.request.headers.add({ key: 'X-Tenant-ID', value: pm.environment.get('X-Tenant-ID') });"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Tenants",
+			"item": [
+				{
+					"name": "Get Tenants",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/tenants",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"tenants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Tenant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"sdfdd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/tenants",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"tenants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tenant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/tenants/{{tenant}}",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"tenants",
+								"{{tenant}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Tenant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"dfdfdfdfddf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/tenants/{{tenant}}",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"tenants",
+								"{{tenant}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Tenant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/tenants/{{tenant}}",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"tenants",
+								"{{tenant}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base}}/test",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					"pm.request.headers.add({ key: 'Accept', value: 'application/json' });"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
