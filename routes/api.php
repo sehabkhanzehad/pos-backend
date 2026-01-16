@@ -9,15 +9,19 @@ require __DIR__ . '/api/auth.php';
 
 Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     require __DIR__ . '/api/tenant.php';
+    // Can manage only owner
 
+    // Can manage owner and staff (based on permissions)
     Route::middleware(ResolveTenant::class)->group(function () {
+        require __DIR__ . '/api/report.php';
+
         require __DIR__ . '/api/staff.php';
         require __DIR__ . '/api/role-permission.php';
 
         require __DIR__ . '/api/product.php';
         require __DIR__ . '/api/customer.php';
         require __DIR__ . '/api/order.php';
-        require __DIR__ . '/api/report.php';
+
         require __DIR__ . '/api/setting.php';
     });
 });

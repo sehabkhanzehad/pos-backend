@@ -32,12 +32,4 @@ enum Permission: string
     case OrderCreate = 'order.create';
     case OrderUpdate = 'order.update';
     case OrderDelete = 'order.delete';
-
-    // case ReportView = 'report.view';
-    // case ReportCreate = 'report.create';
-    // case ReportUpdate = 'report.update';
-    // case ReportDelete = 'report.delete';
-
-    // case SettingView = 'setting.view';
-    // case SettingUpdate = 'setting.update';
 }
