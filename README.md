@@ -14,6 +14,7 @@ A scalable, secure, and multi-tenant Point-of-Sale (POS) backend system built wi
 - [Key Design Decisions and Trade-offs](#key-design-decisions-and-trade-offs)
 - [Performance Considerations](#performance-considerations)
 - [Testing](#testing)
+- [Video Explanation](#video-explanation)
 - [API Endpoints](#api-endpoints)
 - [API Usage](#usage)
 - [Postman Collection](#postman-collection)
@@ -213,6 +214,10 @@ Key points:
   - `GET /api/products/{id}` — cached per tenant + product for 1 hour.
 
 See `app/Support/ProductCache.php` for the implementation details and `app/Http/Controllers/Api/Tenant/ProductController.php` for how caching and invalidation are applied.
+
+## Video Explanation
+
+Watch a short video explanation of the system: [Google Drive Video](https://drive.google.com/file/d/14fsAglwOHiYqNkQiAr-DYU-_uiHQi4vh/view?usp=sharing)
 
 ## API Endpoints
 
